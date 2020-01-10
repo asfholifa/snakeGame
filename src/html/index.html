@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <script type="text/javascript" src="assets/clr_pick/colorpicker.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <meta charset="utf-8" />
+    <title>Snake</title>
+</head>
+
+<body>
+
+    <div class="menuBar">
+        <div class="menu" id="btnMenu">
+            <img class="menuImg" src="img/menu.png" alt="">
+        </div>
+
+        <div class="menu" id="btnPause">
+            <img class="menuImg" src="img/pause.png" alt="">
+        </div>
+    </div>
+
+    <div class="back-dialog" id="menu">
+        <div class="mainMenu-buttonsBar">
+            <input type="button" value="Начать сначала" class="button" id="repeatBtn">
+            <input type="button" value="Выбрать сложность" class="button" id="dificultBtnMenu">
+            <input type="button" value="Выбрать цвет фона" class="button" id="colorPalleteBtn">
+            <input type="button" value="Назад" class="button" id="backBtnMenu">
+        </div>
+    </div>
+
+    <div class="back-dialog" id="colorPalleteMenu">
+        <div class="dialog-content">
+            <div id="color-picker" class="cp-default">
+                <div class="picker-wrapper">
+                    <div id="picker" class="picker"></div>
+                    <div id="picker-indicator" class="picker-indicator"></div>
+                </div>
+                <div class="pcr-wrapper">
+                    <div id="pcr" class="pcr"></div>
+                    <div id="pcr-indicator" class="pcr-indicator"></div>
+                </div>
+                <ul id="color-values">
+                    <li><label>RGB:</label><span id="rgb"></span></li>
+                    <li><label>HSV:</label><span id="hsv"></span></li>
+                    <li><label>HEX:</label><span id="hex"></span></li>
+                    <li>
+                        <div id="pcr_bg"></div>
+                    </li>
+                </ul>
+            </div>
+            <input type="button" value="Ок" class="button" id="okPalleteBtn">
+        </div>
+    </div>
+
+    <!-- Div с классом back-dialog будет затемнять страницу -->
+    <div class="back-dialog" id="dificult">
+        <!-- Блок с нашим контентом -->
+        <div class="dialog-content">
+            <!-- Заголовок и кнопка закрытия окна -->
+            <div class="dificultButtons">
+                <input type="button" value="Легкая" class="button" id="buttonEasy">
+                <input type="button" value="Средняя" class="button" id="buttonNormal">
+                <input type="button" value="Сложная" class="button" id="buttonHard">
+            </div>
+            <div id="backBtnInDifBar">
+                <input type="button" value="Назад" class="button" id="backBtnDificult">
+            </div>
+        </div>
+    </div>
+
+    <div class="canvas">
+        <canvas id="snake" width="800" height="650">HTML 5 не поддерживется</canvas>
+    </div>
+
+    <div class="container">
+        <div class="gamePad">
+            <div class="firstButton">
+                <input type="image" class="buttons" id="upButton" src="img/1.png">
+            </div>
+            <div class="otherButtons">
+                <input type="image" class="buttons" id="leftButton" src="img/2.png">
+                <input type="image" class="buttons" id="downButton" src="img/3.png">
+                <input type="image" class="buttons" id="rightButton" src="img/4.png">
+            </div>
+        </div>
+    </div>
+
+    <div class="pauseScreen" id="pause">
+        <img class="gif" src="img/gif.gif">
+    </div>
+
+    <img id="gameOverImg" src="img/gameOver.png" class="gameOver">
+    <script type="application/javascript" src="main.js"> </script>
+
+</body>
+
+</html>
