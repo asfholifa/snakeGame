@@ -1,7 +1,5 @@
 import * as vscode from 'vscode';
-import {
-    fstat
-} from 'fs';
+import {fstat} from 'fs';
 
 export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(
@@ -16,7 +14,7 @@ export function activate(context: vscode.ExtensionContext) {
             );
             var fs = require("fs");
 
-            fs.readFileSync('/src/html/index.html', 'utf8', (err: any, data: any) => {
+            fs.readFileSync('src/html/index.html', 'utf8', (err: any, data: any) => {
                 if (err) throw err;
                 console.log(data);
             });
