@@ -4,8 +4,8 @@ var game = $("#snake")[0], //id convas
     yZ = game.height / 2 - 25,
     xZarr = [],
     yZarr = [], //Массивы координат змейки
-    xF, yF, //Координаты позиции фрукта
-    p = 0;
+    xF, yF,
+    p = 0; //Координаты позиции фрукта
 
 var color;
 var interval;
@@ -14,36 +14,56 @@ var feilIMg = $("#gameOverImg")[0]
 
 class Snake {
 
-    constructor(xS, yS, qS, rS, xK, yK) {
+    constructor(xS, yS, qS, rS, xK, yK, vK) {
         this.xS = xS;
         this.yS = yS;
         this.qS = qS;
         this.rS = rS;
         this.xK = xK;
         this.yK = yK;
+        this.vK = vK;
     };
 
-    goTotheUp(event){
-        event.preventDefault();
-        switch (event.keyCode) {
-            case 38:
-            case 87:
-                if (vK != 1) {
-                    xK = 0;
-                    yK = -1;
-                    vK = 1
-                };
-                break; //Вверх
-    }    
+    goToTheUp() {
+        if (this.vK != 1) {
+            this.xK = 0;
+            this.yK = -1;
+            this.vK = 1
+        };
+    };
+
+    goToTheDown() {
+        if (this.vK != 1) {
+            this.xK = 0;
+            this.yK = 1;
+            this.vK = 1
+        };
+    };
+
+    goToTheLeft() {
+        if (this.vK != 2) {
+            this.xK = -1;
+            this.yK = 0;
+            this.vK = 2
+        };
+    };
+
+    goToTheRight() {
+        if (this.vK != 2) {
+            this.xK = 1;
+            this.yK = 0;
+            this.vK = 2
+        };
+    };
 
     coordinatesWhileItGoes() {
         //Рассчитываем координату при движении
         xZ = xZ + this.xK * this.qS;
-        if (xZ >= this.xS) feil();
-        if (xZ < 0) feil();
+        if (xZ >= this.xS) actions.feil();
+        if (xZ < 0) actions.feil();
         yZ = yZ + this.yK * this.qS;
-        if (yZ >= this.yS) feil();
-        if (yZ < 0) feil();
+        if (yZ >= this.yS) actions.feil();
+        if (yZ < 0) actions.feil();
     };
 
     drawSnake() {
@@ -68,47 +88,42 @@ class Snake {
 let snake = new Snake(game.width, game.height, 25, 0, 0, 0);
 
 
-class Board{
+class Board {
     boardSize() {
-        //Фон и размер игрового поля
         ctx.fillStyle = color;
         ctx.fillRect(0, 0, snake.xS, snake.yS);
     };
 
     clash() {
-        //Проверка на столкновение
         for (var i = 0; i <= (snake.rS); i++)
-            if (xZarr[i] == xZ && yZarr[i] == yZ) feil();
+            if (xZarr[i] == xZ && yZarr[i] == yZ) actions.feil();
     };
 
     counter() {
-        //Выводим счетчик съеденных фруктов
-        ctx.fillStyle = "Black"; //Цвет шрифта счетчика
-        ctx.font = "bold 25pt Arial"; //Стиль, размер и шрифт
-        ctx.textBaseline = "middle"; //Расположение по вертикали
-        ctx.textAlign = "center"; //Расположение по горизонтали
-        ctx.fillText(snake.rS + 1, 15, 25); //Расположение счетчика (привязка к фрукту)
+        ctx.fillStyle = "Black";
+        ctx.font = "bold 25pt Arial";
+        ctx.textBaseline = "middle";
+        ctx.textAlign = "center";
+        ctx.fillText(snake.rS + 1, 15, 25);
     };
 };
 
 let board = new Board();
 
 
-class Fruit{
+class Fruit {
 
-    //Функция случайного выбора координат для фрукта
     spawnFruit() {
         xF = Math.round((snake.xS / snake.qS - 1) * Math.random()) * snake.qS;
         yF = Math.round((snake.yS / snake.qS - 1) * Math.random()) * snake.qS;
         for (var i = 0; i <= (snake.rS); i++)
-            if (xZarr[i] == xF && yZarr[i] == yF) spawnFruit(); //Повторный рандом при наложении на змейку
+            if (xZarr[i] == xF && yZarr[i] == yF) spawnFruit(); 
     };
 
     fruitColor() {
-        //Цвет и позиция фрукта
         ctx.beginPath();
-        ctx.arc(xF + snake.qS / 2, yF + snake.qS / 2, snake.qS / 2, snake.qS / 2, Math.PI * 2, true); //Разметка оружности
-        ctx.fillStyle = "Red"; //Цвет круга
+        ctx.arc(xF + snake.qS / 2, yF + snake.qS / 2, snake.qS / 2, snake.qS / 2, Math.PI * 2, true); 
+        ctx.fillStyle = "Red";
         ctx.fill();
     };
 
@@ -117,19 +132,141 @@ class Fruit{
 let fruit = new Fruit();
 fruit.spawnFruit();
 
+class Menu {
 
-function feil() {
-    clearInterval(interval);
-    ctx.drawImage(feilIMg, 40, 0);
+    dificultsComand = function (x) {
+        clearInterval(interval);
+        $("#dificult").fadeOut();
+        interval = setInterval(draw, x);
+
+        $("#repeatBtn").click(function () {
+            $("#menu").fadeOut();
+            clearInterval(interval);
+            interval = setInterval(draw, x);
+            fruit.spawnFruit();
+            actions.repeat();
+        });
+
+        $("#backBtnMenu").click(function () {
+            $("#menu").fadeOut();
+            interval = setInterval(draw, x);
+        });
+
+        $("#okPalleteBtn").click(function () {
+            $("#colorPalleteMenu").fadeOut();
+            clearInterval(interval);
+            interval = setInterval(draw, x);
+        });
+
+        $("#pause").click(function () {
+            $("#pause").fadeOut();
+            interval = setInterval(draw, x);
+        });
+
+        $("#btnPause").click(function () {
+            $("#pause").fadeIn();
+            clearInterval(interval);
+            $("#pause").click(function () {
+                $("#pause").fadeOut();
+            });
+        });
+
+        onkeydown = function (event) {
+            event.preventDefault();
+            switch (event.keyCode) {
+                case 38:
+                case 87:
+                    snake.goToTheUp();
+                    break;
+                case 39:
+                case 68:
+                    snake.goToTheRight(); //Вправо
+                    break;
+                case 40:
+                case 83:
+                    snake.goToTheDown(); //Вниз
+                    break;
+                case 37:
+                case 65:
+                    snake.goToTheLeft(); //Влево
+                    break;
+                case 32:
+                    if (p == 0) {
+                        p = 1;
+                        $("#pause").fadeIn();
+                        clearInterval(interval);
+                    } else {
+                        p = 0;
+                        $("#pause").fadeOut();
+                        interval = setInterval(draw, x)
+                    };
+            };
+        };
+    };
+
+    menuCall() {
+        $("#btnMenu").click(function () {
+            clearInterval(interval);
+            $("#menu").fadeIn();
+
+            $("#colorPalleteBtn").click(function () {
+                $("#menu").fadeOut();
+                $("#colorPalleteMenu").fadeIn();
+            })
+
+            $("#exitBtn").click(function () {
+                close();
+            });
+
+            $("#dificultBtnMenu").click(function () {
+                $("#dificult").fadeIn();
+                $("#menu").fadeOut();
+            });
+
+            $("#backBtnDificult").click(function () {
+                $("#dificult").fadeOut();
+                $("#menu").fadeIn();
+            });
+
+            $("#buttonHard").click(function () {
+                menu.dificultsComand(40);
+            });
+
+            $("#buttonNormal").click(function () {
+                menu.dificultsComand(80);
+            });
+
+            $("#buttonEasy").click(function () {
+                menu.dificultsComand(160);
+            });
+
+            $("#backBtnMenu").click(function () {
+                $("#menu").fadeOut();
+            });
+
+        });
+    };
 };
 
-function repeat() {
-    xZ = snake.xS / 2 - snake.qS;
-    yZ = snake.yS / 2 - snake.qS;
-    xZarr.length = 1; //Стираем X-массив змейки до 1 элемента
-    yZarr.length = 1; //Стираем Y-массив змейки до 1 элемента
-    snake.rS = 0; //Обнуляем счетчик
-};
+let menu = new Menu(0);
+
+class Action{
+    
+    repeat() {
+        xZ = snake.xS / 2 - snake.qS;
+        yZ = snake.yS / 2 - snake.qS;
+        xZarr.length = 1; 
+        yZarr.length = 1; 
+        snake.rS = 0; 
+    };
+
+    feil() {
+        clearInterval(interval);
+        ctx.drawImage(feilIMg, 40, 0);
+    };
+}
+
+let actions = new Action();
 
 cp = ColorPicker($('#pcr')[0], $('#picker')[0],
     function (hex, hsv, rgb, mousePicker, mousepcr) {
@@ -148,165 +285,7 @@ cp = ColorPicker($('#pcr')[0], $('#picker')[0],
     });
 cp.setHex('#D4EDFB');
 
-$("#upButton").click(function () {
-    if (snake.vK != 1) {
-        snake.xK = 0;
-        snake.yK = -1;
-        snake.vK = 1
-    };
-});
-
-$("#leftButton").click(function () {
-    if (snake.vK != 2) {
-        snake.xK = -1;
-        snake.yK = 0;
-        snake.vK = 2
-    };
-});
-
-$("#rightButton").click(function () {
-    if (snake.vK != 2) {
-        snake.xK = 1;
-        snake.yK = 0;
-        snake.vK = 2
-    };
-});
-
-$("#downButton").click(function () {
-    if (snake.vK != 1) {
-        snake.xK = 0;
-        snake.yK = 1;
-        snake.vK = 1
-    };
-});
-
-
-
-dificultsComand = function (x) {
-    clearInterval(interval);
-    $("#dificult").fadeOut();
-    interval = setInterval(draw, x);
-
-    $("#repeatBtn").click(function () {
-        $("#menu").fadeOut();
-        clearInterval(interval);
-        interval = setInterval(draw, x);
-        repeat();
-    });
-
-    $("#backBtnMenu").click(function () {
-        $("#menu").fadeOut();
-        interval = setInterval(draw, x);
-    });
-
-    $("#okPalleteBtn").click(function () {
-        $("#colorPalleteMenu").fadeOut();
-        interval = setInterval(draw, x);
-    });
-
-    $("#pause").click(function () {
-        $("#pause").fadeOut();
-        interval = setInterval(draw, x);
-    });
-
-    onkeydown = function (event) {
-        event.preventDefault();
-        switch (event.keyCode) {
-            case 38:
-            case 87:
-                if (snake.vK != 1) {
-                    snake.xK = 0;
-                    snake.yK = -1;
-                    snake.vK = 1
-                };
-                break; //Вверх
-            case 39:
-            case 68:
-                if (snake.vK != 2) {
-                    snake.xK = 1;
-                    snake.yK = 0;
-                    snake.vK = 2
-                };
-                break; //Вправо
-            case 40:
-            case 83:
-                if (snake.vK != 1) {
-                    snake.xK = 0;
-                    snake.yK = 1;
-                    snake.vK = 1
-                };
-                break; //Вниз
-            case 37:
-            case 65:
-                if (snake.vK != 2) {
-                    snake.xK = -1;
-                    snake.yK = 0;
-                    snake.vK = 2
-                };
-                break; //Влево
-            case 32:
-                if (p == 0) {
-                    p = 1;
-                    $("#pause").fadeIn();
-                    clearInterval(interval);
-                } else {
-                    p = 0;
-                    $("#pause").fadeOut();
-                    interval = setInterval(draw, x)
-                };
-        };
-    };
-};
-
-$("#btnPause").click(function () {
-    $("#pause").fadeIn();
-    clearInterval(interval);
-    $("#pause").click(function () {
-        $("#pause").fadeOut();
-    });
-});
-
-$("#btnMenu").click(function () {
-    clearInterval(interval);
-    $("#menu").fadeIn();
-
-    $("#colorPalleteBtn").click(function () {
-        $("#menu").fadeOut();
-        $("#colorPalleteMenu").fadeIn();
-    })
-
-    $("#exitBtn").click(function () {
-        close();
-    });
-
-    $("#dificultBtnMenu").click(function () {
-        $("#dificult").fadeIn();
-        $("#menu").fadeOut();
-    });
-
-    $("#backBtnDificult").click(function () {
-        $("#dificult").fadeOut();
-        $("#menu").fadeIn();
-    });
-
-    $("#buttonHard").click(function () {
-        dificultsComand(40);
-    });
-
-    $("#buttonNormal").click(function () {
-        dificultsComand(80);
-    });
-
-    $("#buttonEasy").click(function () {
-        dificultsComand(160);
-    });
-
-    $("#backBtnMenu").click(function () {
-        $("#menu").fadeOut();
-    });
-
-});
-
+menu.menuCall();
 
 function draw() {
     board.boardSize();
