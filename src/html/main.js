@@ -23,6 +23,18 @@ class Snake {
         this.yK = yK;
     };
 
+    goTotheUp(event){
+        event.preventDefault();
+        switch (event.keyCode) {
+            case 38:
+            case 87:
+                if (vK != 1) {
+                    xK = 0;
+                    yK = -1;
+                    vK = 1
+                };
+                break; //Вверх
+    }    
 
     coordinatesWhileItGoes() {
         //Рассчитываем координату при движении
@@ -56,7 +68,7 @@ class Snake {
 let snake = new Snake(game.width, game.height, 25, 0, 0, 0);
 
 
-class Board extends Snake {
+class Board{
     boardSize() {
         //Фон и размер игрового поля
         ctx.fillStyle = color;
@@ -82,7 +94,7 @@ class Board extends Snake {
 let board = new Board();
 
 
-class Fruit extends Snake {
+class Fruit{
 
     //Функция случайного выбора координат для фрукта
     spawnFruit() {
@@ -305,7 +317,6 @@ function draw() {
 
     board.clash();
 
-    //Заменяем координаты в начальных элементах массива
     xZarr.unshift(xZ);
     yZarr.unshift(yZ);
 
