@@ -59,11 +59,11 @@ class Snake {
     coordinatesWhileItGoes() {
         //Рассчитываем координату при движении
         xZ = xZ + this.xK * this.qS;
-        if (xZ >= this.xS) actions.feil();
-        if (xZ < 0) actions.feil();
+        if (xZ >= this.xS) action.feil();
+        if (xZ < 0) action.feil();
         yZ = yZ + this.yK * this.qS;
-        if (yZ >= this.yS) actions.feil();
-        if (yZ < 0) actions.feil();
+        if (yZ >= this.yS) action.feil();
+        if (yZ < 0) action.feil();
     };
 
     drawSnake() {
@@ -96,7 +96,7 @@ class Board {
 
     clash() {
         for (var i = 0; i <= (snake.rS); i++)
-            if (xZarr[i] == xZ && yZarr[i] == yZ) actions.feil();
+            if (xZarr[i] == xZ && yZarr[i] == yZ) action.feil();
     };
 
     counter() {
@@ -144,7 +144,7 @@ class Menu {
             clearInterval(interval);
             interval = setInterval(draw, x);
             fruit.spawnFruit();
-            actions.repeat();
+            action.repeat();
         });
 
         $("#backBtnMenu").click(function () {
@@ -248,7 +248,7 @@ class Menu {
     };
 };
 
-let menu = new Menu(0);
+let menu = new Menu();
 
 class Action {
 
@@ -261,13 +261,19 @@ class Action {
     };
 
     feil() {
+        ctx.fillStyle = color;
+        ctx.strokeStyle = color;
+        ctx.fill();
+        ctx.stroke();
+        xZarr.length = 0;
+        yZarr.length = 0;
         clearInterval(interval);
         ctx.drawImage(feilIMg, 40, 0);
     };
 
 }
 
-let actions = new Action();
+let action = new Action();
 
 cp = ColorPicker($('#pcr')[0], $('#picker')[0],
     function (hex, hsv, rgb, mousePicker, mousepcr) {
