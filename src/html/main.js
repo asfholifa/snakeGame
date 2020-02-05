@@ -117,12 +117,12 @@ class Fruit {
         xF = Math.round((snake.xS / snake.qS - 1) * Math.random()) * snake.qS;
         yF = Math.round((snake.yS / snake.qS - 1) * Math.random()) * snake.qS;
         for (var i = 0; i <= (snake.rS); i++)
-            if (xZarr[i] == xF && yZarr[i] == yF) spawnFruit(); 
+            if (xZarr[i] == xF && yZarr[i] == yF) spawnFruit();
     };
 
     fruitColor() {
         ctx.beginPath();
-        ctx.arc(xF + snake.qS / 2, yF + snake.qS / 2, snake.qS / 2, snake.qS / 2, Math.PI * 2, true); 
+        ctx.arc(xF + snake.qS / 2, yF + snake.qS / 2, snake.qS / 2, snake.qS / 2, Math.PI * 2, true);
         ctx.fillStyle = "Red";
         ctx.fill();
     };
@@ -250,20 +250,21 @@ class Menu {
 
 let menu = new Menu(0);
 
-class Action{
-    
+class Action {
+
     repeat() {
         xZ = snake.xS / 2 - snake.qS;
         yZ = snake.yS / 2 - snake.qS;
-        xZarr.length = 1; 
-        yZarr.length = 1; 
-        snake.rS = 0; 
+        xZarr.length = 1;
+        yZarr.length = 1;
+        snake.rS = 0;
     };
 
     feil() {
         clearInterval(interval);
         ctx.drawImage(feilIMg, 40, 0);
     };
+
 }
 
 let actions = new Action();
