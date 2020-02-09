@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import {fstat} from 'fs';
+import { fstat } from 'fs';
 
 export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(
@@ -8,16 +8,19 @@ export function activate(context: vscode.ExtensionContext) {
                 'snakeGame',
                 'Snake Game',
                 vscode.ViewColumn.One, {
-                    enableScripts: true
-
-                }
+                enableScripts: true
+            }
             );
-            var fs = require("fs");
-
-            fs.readFileSync('src/html/index.html', 'utf8', (err: any, data: any) => {
-                if (err) throw err;
-                console.log(data);
-            });
+            panel.webview.html = getWebviewContent();
         })
     );
+}
+
+var fs = require("fs");
+
+var contetn = fs.readFileSync(__dirname + '/html/index.html', 'utf8');
+console.log(contetn);
+
+function getWebviewContent() {
+    return contetn;
 }
