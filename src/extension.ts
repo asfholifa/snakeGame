@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { fstat } from 'fs';
+import * as path from 'path';
 
 export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(
@@ -7,9 +7,10 @@ export function activate(context: vscode.ExtensionContext) {
             const panel = vscode.window.createWebviewPanel(
                 'snakeGame',
                 'Snake Game',
-                vscode.ViewColumn.One, {
-                enableScripts: true
-            }
+                vscode.ViewColumn.One, 
+                {
+                    enableScripts: true
+                }
             );
             panel.webview.html = getWebviewContent();
         })
