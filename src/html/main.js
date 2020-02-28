@@ -1,7 +1,6 @@
-var p = 0;
-
 let color,
-    interval;
+    interval,
+    p = 0;
 
 
 
