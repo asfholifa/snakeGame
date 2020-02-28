@@ -1,30 +1,40 @@
-var game = $("#snake")[0], //id convas
-    ctx = game.getContext("2d"),
-    xZ = game.width / 2 - 25,
-    yZ = game.height / 2 - 25,
-    xZarr = [],
-    yZarr = [], //Массивы координат змейки
-    xF, yF,
-    p = 0; //Координаты позиции фрукта
+var p = 0;
 
-var color;
-var interval;
+let color,
+    interval;
 
-var feilIMg = $("#gameOverImg")[0]
+
+
+class Game {
+    constructor(idConv) {
+        this.idConv = idConv;
+    }
+}
+
+let game = new Game($("#snake")[0]);
+
+
+class Convas {
+    constructor(ctx) {
+        this.ctx = ctx
+    }
+}
+
+let convas = new Convas(game.idConv.getContext("2d"));
 
 class Snake {
 
-    constructor(xS, yS, qS, rS, xK, yK, vK) {
-        this.xS = xS;
-        this.yS = yS;
-        this.qS = qS;
-        this.rS = rS;
+    constructor(xZ, yZ, xZarr, yZarr, xK, yK, vK) {
+        this.xZ = xZ;
+        this.yZ = yZ;
+        this.xZarr = xZarr;
+        this.yZarr = yZarr;
         this.xK = xK;
         this.yK = yK;
         this.vK = vK;
     };
 
-    goToTheUp() {
+    goUp() {
         if (this.vK != 1) {
             this.xK = 0;
             this.yK = -1;
@@ -32,7 +42,7 @@ class Snake {
         };
     };
 
-    goToTheDown() {
+    goDown() {
         if (this.vK != 1) {
             this.xK = 0;
             this.yK = 1;
@@ -40,7 +50,7 @@ class Snake {
         };
     };
 
-    goToTheLeft() {
+    goLeft() {
         if (this.vK != 2) {
             this.xK = -1;
             this.yK = 0;
@@ -48,7 +58,7 @@ class Snake {
         };
     };
 
-    goToTheRight() {
+    goRight() {
         if (this.vK != 2) {
             this.xK = 1;
             this.yK = 0;
@@ -58,83 +68,92 @@ class Snake {
 
     coordinatesWhileItGoes() {
         //Рассчитываем координату при движении
-        xZ = xZ + this.xK * this.qS;
-        if (xZ >= this.xS) action.feil();
-        if (xZ < 0) action.feil();
-        yZ = yZ + this.yK * this.qS;
-        if (yZ >= this.yS) action.feil();
-        if (yZ < 0) action.feil();
+        this.xZ = this.xZ + this.xK * board.qS;
+        this.yZ = this.yZ + this.yK * board.qS;
     };
 
-    drawSnake() {
-        //Цвет и цикл вывода массива элементов змейки с отрисовкой
-        ctx.fillStyle = "Black";
-        for (var i = 0; i <= (this.rS); i++) ctx.fillRect(xZarr[i] + 1,
-            yZarr[i] + 1, this.qS - 2, this.qS - 2); //Отрисовка массива змейки
-    };
-
-    eatingFruit() {
+    eatFruit() {
         //Кушаем фрукт, при совпадении координат головы змеи и фрукта - выводим новый фрукт и счетчик +1
-        if (xF == xZ && yF == yZ) {
-            fruit.spawnFruit();
-            this.rS++;
+        if (fruit.xF == this.xZ && fruit.yF == this.yZ) {
+            fruit.spawn();
+            board.rS++;
         } else { //Иначе - стираем хвост, т.е. змейка перемещается без прироста
-            xZarr.pop();
-            yZarr.pop();
+            this.xZarr.pop();
+            this.yZarr.pop();
         }
     };
 };
 
-let snake = new Snake(game.width, game.height, 25, 0, 0, 0);
-
+let snake = new Snake(game.idConv.width / 2 - 25, game.idConv.height / 2 - 25, [], [], 0, 0);
 
 class Board {
-    boardSize() {
-        ctx.fillStyle = color;
-        ctx.fillRect(0, 0, snake.xS, snake.yS);
+    constructor(xS, yS, qS, rS) {
+        this.xS = xS;
+        this.yS = yS;
+        this.qS = qS;
+        this.rS = rS;
+    };
+
+    size() {
+        convas.ctx.fillStyle = color;
+        convas.ctx.fillRect(0, 0, this.xS, this.yS);
     };
 
     clash() {
-        for (var i = 0; i <= (snake.rS); i++)
-            if (xZarr[i] == xZ && yZarr[i] == yZ) action.feil();
+        for (var i = 0; i <= (this.rS); i++)
+            if (snake.xZarr[i] == snake.xZ && snake.yZarr[i] == snake.yZ) action.fail();
+        if (snake.yZ >= this.yS) action.fail();
+        if (snake.yZ < 0) action.fail();
+        if (snake.xZ >= this.xS) action.fail();
+        if (snake.xZ < 0) action.fail();
     };
 
     counter() {
-        ctx.fillStyle = "Black";
-        ctx.font = "bold 25pt Arial";
-        ctx.textBaseline = "middle";
-        ctx.textAlign = "center";
-        ctx.fillText(snake.rS + 1, 15, 25);
+        convas.ctx.fillStyle = "Black";
+        convas.ctx.font = "bold 25pt Arial";
+        convas.ctx.textBaseline = "middle";
+        convas.ctx.textAlign = "center";
+        convas.ctx.fillText(board.rS + 1, 15, 25);
+    };
+
+    drawSnake() {
+        //Цвет и цикл вывода массива элементов змейки с отрисовкой
+        convas.ctx.fillStyle = "Black";
+        for (var i = 0; i <= (board.rS); i++) convas.ctx.fillRect(snake.xZarr[i] + 1,
+            snake.yZarr[i] + 1, board.qS - 2, board.qS - 2); //Отрисовка массива змейки
     };
 };
 
-let board = new Board();
+let board = new Board(game.idConv.width, game.idConv.height, 25, 0);
 
 
 class Fruit {
-
-    spawnFruit() {
-        xF = Math.round((snake.xS / snake.qS - 1) * Math.random()) * snake.qS;
-        yF = Math.round((snake.yS / snake.qS - 1) * Math.random()) * snake.qS;
-        for (var i = 0; i <= (snake.rS); i++)
-            if (xZarr[i] == xF && yZarr[i] == yF) spawnFruit();
+    constructor(xF, yF){
+        this.xF = xF;
+        this.yF = yF;
     };
 
-    fruitColor() {
-        ctx.beginPath();
-        ctx.arc(xF + snake.qS / 2, yF + snake.qS / 2, snake.qS / 2, snake.qS / 2, Math.PI * 2, true);
-        ctx.fillStyle = "Red";
-        ctx.fill();
+    spawn() {
+        this.xF = Math.round((board.xS / board.qS - 1) * Math.random()) * board.qS;
+        this.yF = Math.round((board.yS / board.qS - 1) * Math.random()) * board.qS;
+        for (var i = 0; i <= (board.rS); i++)
+            if (snake.xZarr[i] == this.xF && snake.yZarr[i] == this.yF) this.spawn();
+    };
+
+    getColor() {
+        convas.ctx.beginPath();
+        convas.ctx.arc(this.xF + board.qS / 2, this.yF + board.qS / 2, board.qS / 2, board.qS / 2, Math.PI * 2, true);
+        convas.ctx.fillStyle = "Red";
+        convas.ctx.fill();
     };
 
 };
 
-let fruit = new Fruit();
-fruit.spawnFruit();
+let fruit = new Fruit(0,0);
 
 class Menu {
 
-    dificultsComand = function (x) {
+    static dificultsComand(x) {
         clearInterval(interval);
         $("#dificult").fadeOut();
         interval = setInterval(draw, x);
@@ -143,7 +162,7 @@ class Menu {
             $("#menu").fadeOut();
             clearInterval(interval);
             interval = setInterval(draw, x);
-            fruit.spawnFruit();
+            fruit.spawn();
             action.repeat();
         });
 
@@ -171,11 +190,11 @@ class Menu {
             });
         });
 
-        action.onkeydown(event);
+        onkeydown(event);
 
     };
 
-    menuCall() {
+    call() {
         $("#btnMenu").click(function () {
             clearInterval(interval);
             $("#menu").fadeIn();
@@ -200,15 +219,15 @@ class Menu {
             });
 
             $("#buttonHard").click(function () {
-                menu.dificultsComand(40);
+                Menu.dificultsComand(40);
             });
 
             $("#buttonNormal").click(function () {
-                menu.dificultsComand(80);
+                Menu.dificultsComand(80);
             });
 
             $("#buttonEasy").click(function () {
-                menu.dificultsComand(160);
+                Menu.dificultsComand(160);
             });
 
             $("#backBtnMenu").click(function () {
@@ -222,28 +241,31 @@ class Menu {
 let menu = new Menu();
 
 class Action {
+    constructor(failIMg) {
+        this.failIMg = failIMg;
+    }
 
     repeat() {
-        xZ = snake.xS / 2 - snake.qS;
-        yZ = snake.yS / 2 - snake.qS;
-        xZarr.length = 1;
-        yZarr.length = 1;
-        snake.rS = 0;
+        snake.xZ = board.xS / 2 - board.qS;
+        snake.yZ = board.yS / 2 - board.qS;
+        snake.xZarr.length = 1;
+        snake.yZarr.length = 1;
+        board.rS = 0;
     };
 
-    feil() {
-        ctx.fillStyle = color;
-        ctx.strokeStyle = color;
-        ctx.fill();
-        ctx.stroke();
-        xZarr.length = 0;
-        yZarr.length = 0;
+    fail() {
+        convas.ctx.fillStyle = color;
+        convas.ctx.strokeStyle = color;
+        convas.ctx.fill();
+        convas.ctx.stroke();
+        snake.xZarr.length = 0;
+        snake.yZarr.length = 0;
         clearInterval(interval);
-        ctx.drawImage(feilIMg, 40, 0);
+        convas.ctx.drawImage(this.failIMg, 40, 0);
     };
 };
 
-let action = new Action();
+let action = new Action($("#gameOverImg")[0]);
 
 cp = ColorPicker($('#pcr')[0], $('#picker')[0],
     function (hex, hsv, rgb, mousePicker, mousepcr) {
@@ -262,26 +284,26 @@ cp = ColorPicker($('#pcr')[0], $('#picker')[0],
     });
 cp.setHex('#D4EDFB');
 
-menu.menuCall();
+menu.call();
 
 onkeydown = function (event) {
     event.preventDefault();
     switch (event.keyCode) {
         case 38:
         case 87:
-            snake.goToTheUp();
+            snake.goUp();
             break;
         case 39:
         case 68:
-            snake.goToTheRight(); //Вправо
+            snake.goRight(); //Вправо
             break;
         case 40:
         case 83:
-            snake.goToTheDown(); //Вниз
+            snake.goDown(); //Вниз
             break;
         case 37:
         case 65:
-            snake.goToTheLeft(); //Влево
+            snake.goLeft(); //Влево
             break;
         case 32:
             if (p == 0) {
@@ -296,37 +318,39 @@ onkeydown = function (event) {
     };
 
     $("#upButton").click(function () {
-        snake.goToTheUp();
+        snake.goUp();
     });
 
     $("#leftButton").click(function () {
-        snake.goToTheLeft();
+        snake.goLeft();
     });
 
     $("#rightButton").click(function () {
-        snake.goToTheRight();
+        snake.goRight();
     });
 
     $("#downButton").click(function () {
-        snake.goToTheDown();
+        snake.goDown();
     });
 };
 
-function draw() {
-    board.boardSize();
+fruit.spawn();
 
-    fruit.fruitColor();
+function draw() {
+    board.size();
+
+    fruit.getColor();
 
     snake.coordinatesWhileItGoes();
 
     board.clash();
 
-    xZarr.unshift(xZ);
-    yZarr.unshift(yZ);
+    snake.xZarr.unshift(snake.xZ);
+    snake.yZarr.unshift(snake.yZ);
 
-    snake.drawSnake();
+    board.drawSnake();
 
-    snake.eatingFruit();
+    snake.eatFruit();
 
     board.counter();
 }
